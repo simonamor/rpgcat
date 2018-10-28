@@ -212,11 +212,19 @@ sub send {
         push @recipients, $headers{$k} if ($k =~ /^(To|Cc|Bcc)$/i);
     }
 
-    Email::Sender::Simple->send($email, {
-        from => $sender,
-        to => \@recipients,
-        transport => $transport,
-    });
+warn "transport: " . $transport;
+
+    my $result = eval {
+        $transport->send($email, {
+            from => $sender,
+            to => \@recipients,
+        });
+    };
+    warn "result: " . ($result ? $result : "");
+    if ($@) {
+        my $r = $@;
+        warn "r: " . $r;
+    }
     return $self;
 }
 

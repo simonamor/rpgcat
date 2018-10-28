@@ -148,7 +148,7 @@ sub signup :Path("/signup") Args(0) {
         } else {
             my $account = $exists->single();
 
-            my $emkit = $c->model('EMKit', transport_class => 'Email::Sender::Transport::Sendmail')
+            my $emkit = $c->model('EMKit')
                 ->template("verification-exists.mkit", {
                     destination_email => $account->email,
                     account => $account,
@@ -166,7 +166,7 @@ sub signup :Path("/signup") Args(0) {
         # FIXME: Send verification email to $email asking user to confirm
         # their email address (note - this does not log them in!)
 
-        my $emkit = $c->model('EMKit', transport_class => 'Email::Sender::Transport::Sendmail')
+        my $emkit = $c->model('EMKit')
             ->template("verification-new.mkit", {
                 destination_email => $email,
                 account => undef,
@@ -224,9 +224,8 @@ sub forgot :Path("/forgot") Args(0) {
 # {{{
         $c->log->debug("No user found for $email");
 
-        my $emkit = $c->model('EMKit',
-                transport_class => 'Email::Sender::Transport::Sendmail');
-        $emkit = $emkit->template("forgotten-notexists.mkit", {
+        my $emkit = $c->model('EMKit')
+            ->template("forgotten-notexists.mkit", {
                 destination_email => $email,
                 account => undef,
                 config_url  => $c->uri_for('/'),
@@ -246,9 +245,8 @@ sub forgot :Path("/forgot") Args(0) {
     } elsif (! $account->active) {
         # Check for active status - suspended account
 # {{{
-        my $emkit = $c->model('EMKit',
-                transport_class => 'Email::Sender::Transport::Sendmail');
-        $emkit = $emkit->template("forgotten-suspended.mkit", {
+        my $emkit = $c->model('EMKit')
+            ->template("forgotten-suspended.mkit", {
                 destination_email => $email,
                 account => $account,
                 config_url => $c->uri_for('/'),
@@ -305,8 +303,7 @@ sub forgot :Path("/forgot") Args(0) {
     });
 
     $c->log->debug("User found " . $account->account_id . " token $token_value id $hashid");
-    my $emkit = $c->model('EMKit',
-            transport_class => 'Email::Sender::Transport::Sendmail')
+    my $emkit = $c->model('EMKit')
         ->template("forgotten-exists.mkit", {
             destination_email => $account->email,
             account => $account,

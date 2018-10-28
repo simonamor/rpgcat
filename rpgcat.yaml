@@ -1,6 +1,8 @@
 Model::EMKit:
-    from_email: rpgcat@example.net
+    from_email: rpgcat@leaky.org
     from_name: RPGCat
+    default_transport: Email::Sender::Transport::Sendmail
+    default_transport_args:
 
 Model::DB:
     connect_info:

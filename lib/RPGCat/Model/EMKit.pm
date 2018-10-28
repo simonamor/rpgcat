@@ -7,6 +7,7 @@ use base 'Catalyst::Model::Factory';
 
 use RPGCat::EMKit;
 use Moose;
+use Types::Standard qw(Maybe HashRef);
 
 =head1 NAME
 
@@ -24,6 +25,8 @@ https://github.com/simonamor/catalyst-example-email/
 
 our $AUTOLOAD;
 
+__PACKAGE__->config( class => "RPGCat::EMKit" );
+
 has 'EmailInstance' => (
     is => 'rw',
     isa => 'RPGCat::EMKit',
@@ -40,7 +43,24 @@ has 'from_name' => (
     default => 'RPGCat',
 );
 
-__PACKAGE__->config( class => "RPGCat::Model::EMKit" );
+
+=head2 default_transport
+You will almost definitely want to use something that isn't
+Email::Sender::Transport::Test during normal use otherwise
+you won't get any emails!
+=cut
+
+has 'default_transport' => (
+    is => 'rw',
+    isa => 'Str',
+    default => 'Email::Sender::Transport::Test',
+);
+
+has 'default_transport_args' => (
+    is => 'rw',
+    isa => Maybe[HashRef],
+    default => undef,
+);
 
 =head2 ACCEPT_CONTEXT
 
@@ -56,6 +76,8 @@ sub ACCEPT_CONTEXT {
         template_path => $c->path_to('templates', 'email')->stringify,
         default_from_name => $self->from_name,
         default_from_email => $self->from_email,
+        transport_class => $self->default_transport,
+        transport_args => $self->default_transport_args,
         @args );
 
     return $emkit;

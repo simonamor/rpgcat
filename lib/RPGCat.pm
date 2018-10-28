@@ -116,6 +116,18 @@ __PACKAGE__->config(
         # time if it's got less than 70 hours until it expires
         expiry_threshold => 3600*70,
     },
+
+
+    'Model::EMKit' => {
+        default_from => '"RPG Cat" <rpgcat@example.org>',
+#        default_transport => 'Email::Sender::Transport::SMTP',
+#        default_transport_args => {
+#            host => "127.0.0.1",
+#            port => 25,
+#        },
+#        template_path => __PACKAGE__->path_to('templates', 'email')->stringify,
+    },
+
 );
 
 # Extend status messages to include a success message (green bar) as well
